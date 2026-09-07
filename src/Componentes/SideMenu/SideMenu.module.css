@@ -1,0 +1,143 @@
+/* Overlay escuro atrás do menu */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Menu lateral - desliza da esquerda */
+.sideMenu {
+  position: fixed;
+  top: 45px;
+  left: 0;
+  width: 95vw;
+  height: 100vh;
+  background-color: var(--store-ink);
+  color: #ffffff;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  padding: 2rem 1.5rem;
+  box-shadow: var(--store-shadow-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.sideMenu.open {
+  transform: translateX(0);
+}
+
+/* Botão de fechar (✕) */
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  align-self: flex-end;
+  color: #ffffff;
+  transition: transform 0.2s;
+}
+
+.closeBtn:hover {
+  transform: rotate(90deg);
+}
+
+/* Links do menu */
+.sideMenu nav ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.sideMenu nav ul li {
+  margin: 1.5rem 0;
+}
+
+.sideMenu nav ul li a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #ffffff;
+  transition: color 0.2s, padding-left 0.2s;
+  display: block;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sideMenu nav ul li a:hover {
+  color: #d8d6cc;
+  padding-left: 8px;
+}
+
+.area_tema {
+  display: flex;
+  width: 100%;
+}
+
+.authArea {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 25px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.authArea a {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 10px 20px;
+  width: 80%;
+  font-size: 1.4rem;
+  border-radius: var(--store-radius-md);
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  color: #ffffff;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.authArea a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+}
+
+.Area_Auth {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 50px;
+}
+
+.Area_Auth button {
+  background: none;
+}
+
+.tema {
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: start;
+  gap: 15px;
+  cursor: pointer;
+  align-items: center;
+  width: 100%;
+  color: #ffffff;
+  border-radius: var(--store-radius-sm);
+}
+
+.tema:hover {
+  color: var(--store-ink);
+  background-color: #ffffff;
+}

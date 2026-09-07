@@ -1,0 +1,231 @@
+.registerPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--store-surface);
+  padding: 20px;
+  padding-top: 100px;
+  font-family: var(--store-font-sans);
+}
+
+.registerContainer {
+  background: var(--store-bg);
+  padding: 40px 32px;
+  border-radius: var(--store-radius-lg);
+  border: 1px solid var(--store-border);
+  max-width: 520px;
+  width: 100%;
+  box-shadow: var(--store-shadow-md);
+}
+
+.registerContainer h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--store-ink);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  color: var(--store-ink-muted);
+  font-size: 0.95rem;
+  margin: 0 0 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--store-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--store-tracking-wide);
+}
+
+.field input,
+.field select {
+  padding: 12px 14px;
+  border: 1px solid var(--store-border);
+  border-radius: var(--store-radius-md);
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
+  background: var(--store-surface);
+  color: var(--store-ink);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--store-ink);
+  box-shadow: 0 0 0 3px rgba(20, 20, 15, 0.08);
+}
+
+.field.error input,
+.field.error select {
+  border-color: var(--store-danger);
+}
+
+.field.error input:focus,
+.field.error select:focus {
+  border-color: var(--store-danger);
+  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.1);
+}
+
+.errorMsg {
+  font-size: 0.8rem;
+  color: var(--store-danger);
+}
+
+/* Senha com ícone */
+.passwordWrapper {
+  position: relative;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--store-ink-soft);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.togglePassword:hover {
+  color: var(--store-ink);
+}
+
+/* Termos */
+.terms {
+  font-size: 0.9rem;
+  color: var(--store-ink-muted);
+  margin: 4px 0;
+}
+
+.terms label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.terms input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--store-ink);
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.terms a {
+  color: var(--store-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terms a:hover {
+  text-decoration: underline;
+}
+
+/* Erros gerais */
+.generalError {
+  background: #fbeceb;
+  color: var(--store-danger);
+  padding: 10px 14px;
+  border-radius: var(--store-radius-sm);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Botão */
+.button {
+  background: var(--store-ink);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: var(--store-radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: var(--store-tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--store-accent-hover);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Link para login */
+.loginLink {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--store-ink-muted);
+  margin: 8px 0 0;
+}
+
+.loginLink a {
+  color: var(--store-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.loginLink a:hover {
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .registerContainer {
+    padding: 24px 16px;
+  }
+  .registerContainer h1 {
+    font-size: 1.4rem;
+  }
+  .field input,
+  .field select {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+}

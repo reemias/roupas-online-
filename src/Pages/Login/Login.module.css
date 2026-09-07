@@ -1,0 +1,167 @@
+.loginPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--store-surface);
+  padding: 20px;
+  padding-top: 100px;
+  font-family: var(--store-font-sans);
+}
+
+.loginContainer {
+  background: var(--store-bg);
+  padding: 40px 32px;
+  border-radius: var(--store-radius-lg);
+  border: 1px solid var(--store-border);
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--store-shadow-md);
+}
+
+.loginContainer h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--store-ink);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  color: var(--store-ink-muted);
+  font-size: 0.95rem;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--store-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--store-tracking-wide);
+}
+
+.field input {
+  padding: 12px 14px;
+  border: 1px solid var(--store-border);
+  border-radius: var(--store-radius-md);
+  font-size: 1rem;
+  background: var(--store-bg);
+  color: var(--store-ink);
+  transition: border 0.2s;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--store-ink);
+}
+
+.field.error input {
+  border-color: var(--store-danger);
+}
+
+.errorMsg {
+  color: var(--store-danger);
+  font-size: 0.8rem;
+}
+
+.generalError {
+  color: var(--store-danger);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.actions {
+  margin-top: 4px;
+}
+
+.button {
+  width: 100%;
+  background: var(--store-ink);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: var(--store-radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: var(--store-tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--store-accent-hover);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.registerLink {
+  text-align: center;
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  color: var(--store-ink-muted);
+}
+
+.registerLink a {
+  color: var(--store-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.registerLink a:hover {
+  text-decoration: underline;
+}
+
+.footerLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.adminLink {
+  display: block;
+  padding: 11px 14px;
+  border: 1px solid var(--store-border);
+  border-radius: var(--store-radius-md);
+  color: var(--store-ink);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.adminLink:hover {
+  background: var(--store-surface);
+  border-color: var(--store-ink);
+}

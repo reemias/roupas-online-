@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bem-vindo ao Ecommerce</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .header {
+      background: linear-gradient(135deg, #6C63FF, #3b3b98);
+      padding: 30px 20px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .header p {
+      margin: 8px 0 0;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 30px 25px;
+      color: #333333;
+    }
+    .content h2 {
+      font-size: 22px;
+      margin-top: 0;
+      color: #2d2d2d;
+    }
+    .content p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+    .highlight {
+      background: #f0f0ff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      border-left: 4px solid #6C63FF;
+      margin: 20px 0;
+    }
+    .features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    .features li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eeeeee;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+    }
+    .features li::before {
+      content: "✅";
+      font-size: 18px;
+    }
+    .cta-button {
+      display: inline-block;
+      background: #6C63FF;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 20px 0 10px;
+      transition: background 0.2s;
+    }
+    .cta-button:hover {
+      background: #5a52d5;
+    }
+    .footer {
+      background: #f8f9fa;
+      padding: 20px 25px;
+      text-align: center;
+      font-size: 13px;
+      color: #777777;
+      border-top: 1px solid #eaeaea;
+    }
+    .footer a {
+      color: #6C63FF;
+      text-decoration: none;
+    }
+    .emoji {
+      font-size: 20px;
+    }
+    @media (max-width: 480px) {
+      .container { margin: 10px; }
+      .header h1 { font-size: 22px; }
+      .content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Cabeçalho -->
+    <div class="header">
+      <h1>🛒 Bem-vindo ao Ecommerce</h1>
+      <p>Sua loja online com tecnologia de ponta</p>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="content">
+      <h2>Parabéns 🎉 {{nome}}!</h2>
+      <p>A partir de agora você tem acesso à melhor plataforma de Ecommerce para seu sucesso nas vendas online, e nós estaremos aqui para te ajudar 😉</p>
+
+      <p>Durante os próximos <strong>7 dias</strong>, você poderá testar toda nossa plataforma e entender porque <strong>já somamos mais de 200.000 lojas</strong> usando diariamente o Ecommerce para gerenciar seus negócios na Era Digital.</p>
+
+      <div class="highlight">
+        <strong>#NãoSePreocupe 😢</strong> Aqui é tudo simples e pensado para você!
+      </div>
+
+      <p>Seu primeiro passo para começar a aproveitar o Ecommerce é <strong>CONFIGURAR SUA LOJA</strong> na ferramenta.</p>
+
+      <h3>✨ Principais funcionalidades para você:</h3>
+      <ul class="features">
+        <li>Centralize e gerencie todos os seus produtos em um só lugar</li>
+        <li>Tenha várias lojas e cuide de tudo sem dor de cabeça</li>
+        <li>Crie rapidamente páginas de produtos lindas com nosso Studio (veja aqui)</li>
+        <li>Agende promoções e campanhas da semana inteira com poucos cliques 😊</li>
+        <li>Convide seu time ou aquele sobrinho esperto pra te ajudar! Usuários ilimitados e sem custo adicional</li>
+        <li>Responda seus clientes e gerencie conversas em um único lugar</li>
+      </ul>
+
+      <div style="text-align: center;">
+        <a href="#" class="cta-button">Começar Agora 🚀</a>
+      </div>
+      <p style="font-size: 14px; color: #888; text-align: center;">Clique no botão acima para configurar sua loja.</p>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+      <p>© 2025 Ecommerce. Todos os direitos reservados.</p>
+      <p>
+        <a href="#">Política de Privacidade</a> |
+        <a href="#">Central de Ajuda</a> |
+        <a href="#">Cancelar Inscrição</a>
+      </p>
+      <p>Este e-mail foi enviado para <strong>{{email}}</strong></p>
+    </div>
+  </div>
+</body>
+</html>

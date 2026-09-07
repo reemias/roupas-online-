@@ -1,0 +1,90 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  background: var(--store-bg);
+}
+
+/* ===== Design tokens da loja (minimalista, neutro, preto como destaque) ===== */
+:root {
+  /* Paleta neutra */
+  --store-bg: #ffffff;
+  --store-surface: #f7f7f5;
+  --store-surface-strong: #efeee9;
+  --store-border: #e4e2dc;
+  --store-ink: #14140f;
+  --store-ink-muted: #5c5a52;
+  --store-ink-soft: #8a877c;
+
+  /* Ação / destaque (preto neutro) */
+  --store-accent: #14140f;
+  --store-accent-hover: #2a2a22;
+  --store-on-accent: #ffffff;
+
+  /* Estado */
+  --store-danger: #b3261e;
+  --store-success: #1e6b3c;
+
+  /* Tipografia */
+  --store-font-sans: 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --store-tracking-wide: 0.06em;
+
+  /* Espaçamento */
+  --store-space-1: 4px;
+  --store-space-2: 8px;
+  --store-space-3: 12px;
+  --store-space-4: 16px;
+  --store-space-5: 24px;
+  --store-space-6: 32px;
+  --store-space-7: 48px;
+  --store-space-8: 64px;
+
+  /* Raio e sombra */
+  --store-radius-sm: 2px;
+  --store-radius-md: 4px;
+  --store-radius-lg: 8px;
+  --store-shadow-sm: 0 1px 2px rgba(20, 20, 15, 0.06);
+  --store-shadow-md: 0 8px 24px rgba(20, 20, 15, 0.08);
+
+  /* Compat: variáveis antigas usadas em módulos legados */
+  --bg-color: var(--store-bg);
+  --text-color: var(--store-ink);
+  --header-bg: var(--store-surface);
+  --bg-tema: rgba(247, 247, 245, 0.92);
+  --text-tema: var(--store-ink);
+  --border-tema: var(--store-border);
+}
+
+[data-theme="dark"] {
+  --store-bg: #14140f;
+  --store-surface: #1c1c16;
+  --store-surface-strong: #26261e;
+  --store-border: #3a3a2e;
+  --store-ink: #f5f4ef;
+  --store-ink-muted: #c9c6ba;
+  --store-ink-soft: #93907f;
+  --store-accent: #f5f4ef;
+  --store-accent-hover: #ffffff;
+  --store-on-accent: #14140f;
+
+  --bg-color: var(--store-bg);
+  --text-color: var(--store-ink);
+  --header-bg: var(--store-surface);
+  --bg-tema: rgba(28, 28, 22, 0.92);
+  --text-tema: var(--store-ink);
+  --border-tema: var(--store-border);
+}
+
+body {
+  font-family: var(--store-font-sans);
+  color: var(--store-ink);
+}
