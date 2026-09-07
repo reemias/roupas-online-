@@ -10,14 +10,4 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     svgr()
   ],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'https://backend-insider.vercel.app', // ← ADICIONE O PROTOCOLO
-        changeOrigin: true,
-        secure: true, // para HTTPS
-        rewrite: (path) => path, // mantém o caminho original
-      },
-    },
-  },
 });

@@ -2,7 +2,7 @@
 
 Frontend da **Insider Store**, uma loja virtual de roupas com foco em descoberta de produtos, apresentação de detalhes, seleção de variações, carrinho persistente e encaminhamento para pagamento. O projeto também inclui um **CMS administrativo** para acompanhar vendas, clientes e produtos.
 
-> O objetivo deste README é explicar como o site funciona na prática: quais são seus objetivos, como o usuário navega, o que cada card representa, quais rotas existem e como o frontend se comunica com a API.
+> O objetivo deste README é explicar como o site funciona na prática: quais são seus objetivos, como o usuário navega, o que cada card representa, quais rotas existem e como o frontend usa o catálogo local em Markdown.
 
 ## 1. Objetivo do projeto
 
@@ -21,13 +21,13 @@ A aplicação é composta por duas experiências complementares:
 
 ### 2.1 Fluxo de descoberta
 
-Ao acessar a raiz (`/`), o visitante encontra a Home da loja. A página apresenta um banner rotativo, filtros de catálogo, ordenação e uma grade de produtos. As categorias exibidas no menu principal são carregadas da API, portanto o cabeçalho pode refletir a organização atual do catálogo.
+Ao acessar a raiz (`/`), o visitante encontra a Home da loja. A página apresenta um banner rotativo, filtros de catálogo, ordenação e uma grade de produtos. As categorias e os produtos são carregados de `public/catalog.md`, portanto o cabeçalho e a vitrine refletem o conteúdo versionado no próprio repositório.
 
 O visitante pode pesquisar pelo campo de busca, abrir uma categoria ou subcategoria no menu, alterar filtros e ordenar os resultados. Cada alteração de filtro reinicia a consulta do catálogo. A Home busca os produtos em páginas de dez registros e carrega mais resultados conforme o usuário se aproxima do final da grade.
 
 ### 2.2 Fluxo de produto
 
-Ao selecionar um produto, o usuário é direcionado para `/produto/:id`. A página consulta os dados do produto pelo identificador da URL e exibe galeria de imagens, descrição, preço, desconto, avaliação, estoque, marca, material e cuidados.
+Ao selecionar um produto, o usuário é direcionado para `/produto/:id`. A página consulta o catálogo Markdown pelo identificador da URL e exibe galeria de imagens, descrição, preço, desconto, avaliação, estoque, marca, material e cuidados.
 
 Antes de adicionar o item, o usuário precisa selecionar as variações disponíveis, como cor e tamanho. A quantidade é limitada pelo estoque informado pela API. Depois da inclusão, o drawer do carrinho é aberto automaticamente e oferece o caminho para continuar comprando ou acessar o carrinho completo.
 
@@ -39,7 +39,7 @@ O carrinho é mantido pelo `CartContext` e persistido no `localStorage`. A combi
 
 Na rota `/carrinho`, o usuário pode alterar quantidades, remover itens e preencher seus dados de identificação. O formulário aplica máscaras para CPF e telefone e valida e-mail, CPF, telefone e nome completo antes do envio.
 
-Ao confirmar o pedido, o frontend envia os itens, o total, os dados do cliente e a opção de sacola para a API. Quando a API retorna um `paymentLink`, o carrinho e os dados temporários do checkout são limpos e o navegador é redirecionado para o checkout externo da InfinitePay. O retorno previsto para a loja é `/payment-success`.
+Ao confirmar o pedido, o frontend valida os dados do checkout, mas o modo catálogo Markdown não persiste pedidos nem gera links de pagamento. A ação é informada ao usuário como indisponível até que um serviço de pedidos seja conectado novamente. O carrinho e o catálogo continuam funcionando localmente.
 
 ## 3. Cards do site
 
@@ -130,32 +130,24 @@ A aplicação usa Context API para compartilhar estados que atravessam várias p
 | `CartContext` | Itens, totais, drawer, inclusão, remoção e alteração de quantidade. | `cart` no `localStorage`. |
 | `CommentsContext` | Estado relacionado aos comentários dos produtos. | Gerenciado pelo fluxo do componente. |
 
-A função de requisição em `src/services/api.ts` adiciona automaticamente o token da loja quando ele existe, envia credenciais de sessão e remove os dados de autenticação quando a API retorna `401`.
+O `CartContext` continua persistindo o carrinho no `localStorage`. O `src/services/api.ts` agora é um repositório local: carrega `public/catalog.md` uma vez, extrai o bloco JSON, aplica filtros, ordenação e paginação em memória e expõe os mesmos métodos `get`, `post`, `put` e `delete` para reduzir mudanças nas telas. Os três últimos retornam uma mensagem explícita de indisponibilidade, pois não existe banco de escrita no frontend.
 
-## 7. Integração com a API
+## 7. Catálogo Markdown local
 
-A URL base é definida em `src/types/api.ts`:
+O arquivo `public/catalog.md` é o banco de dados de leitura do frontend. Ele combina documentação em Markdown com um bloco JSON contendo a coleção `products`. Como está dentro de `public`, o Vite o disponibiliza em `/catalog.md` tanto no desenvolvimento quanto na build de produção.
 
-- Em desenvolvimento, as requisições usam `/api`.
-- Em produção, as requisições usam `https://backend-insider.vercel.app/api`.
-
-O serviço expõe métodos `GET`, `POST`, `PUT` e `DELETE`, serializa objetos para JSON e trata respostas de erro com a mensagem retornada pela API.
+No carregamento inicial, o serviço local faz uma única chamada `fetch('/catalog.md')`, valida o bloco JSON e mantém o resultado em memória. A partir daí, todos os filtros e as paginações são executados no navegador, sem proxy, URL de backend ou chamada para `backend-insider.vercel.app`.
 
 As operações mais relevantes observadas no frontend são:
 
 | Endpoint | Consumidor | Finalidade |
 | --- | --- | --- |
-| `GET /categories` | Cabeçalho | Carregar categorias e subcategorias do menu. |
-| `GET /products` | Home e recomendações | Listar produtos com filtros, ordenação e paginação. |
-| `GET /products/:id` | Detalhes do produto | Carregar um produto específico. |
-| `POST /auth/login` | Login da loja | Autenticar o cliente. |
-| `POST /auth/register` | Cadastro da loja | Criar uma conta de cliente. |
-| `POST /orders` | Carrinho | Criar o pedido e obter o link de pagamento. |
-| `GET /admin/orders` | Dashboard | Carregar pedidos administrativos. |
-| `GET /admin/users` | Dashboard | Carregar clientes administrativos. |
-| `GET /admin/products` | Dashboard | Carregar produtos administrativos. |
+| `GET /categories` | Cabeçalho | Derivar categorias e subcategorias do Markdown. |
+| `GET /products` | Home, busca e recomendações | Filtrar, ordenar e paginar produtos do Markdown. |
+| `GET /products/:id` | Detalhes do produto | Localizar um produto pelo `_id`. |
+| `POST`, `PUT`, `DELETE` | Login, comentários, checkout e CMS | Não disponíveis no modo somente leitura; retornam mensagem orientativa sem acessar backend. |
 
-Os tipos de produto, pedido, cliente e endereço estão centralizados em `src/types/api.ts`. Isso ajuda a manter o contrato usado pelas telas consistente com as respostas esperadas da API.
+O contrato dos produtos continua centralizado em `src/types/api.ts`. Ao editar o catálogo, mantenha os campos compatíveis com `Product`, especialmente `_id`, `name`, `price`, `discount`, `images`, `sizes`, `colors`, `stock`, `rating` e `isActive`.
 
 ## 8. Estrutura principal do código
 
@@ -166,7 +158,7 @@ src/
 ├── Pages/                  # Páginas públicas da loja
 ├── Componentes/            # Cabeçalho, cards, carrinho, comentários e proteção
 ├── contexts/               # Autenticação, carrinho, tema e comentários
-├── services/api.ts         # Cliente HTTP compartilhado
+├── services/api.ts          # Repositório local do catálogo Markdown
 ├── types/                  # Contratos TypeScript da aplicação
 ├── Img/                    # Imagens e logos usadas na interface
 └── cms/
@@ -197,7 +189,7 @@ Os estilos são organizados por componente ou página em arquivos CSS Module. Es
 
 - Node.js compatível com a versão usada pelo projeto.
 - npm, que acompanha o Node.js.
-- A API disponível em `/api` via proxy de desenvolvimento ou em uma URL configurada para produção.
+    - O arquivo `public/catalog.md` presente no projeto.
 
 ### Instalação
 
@@ -220,7 +212,7 @@ npm run lint
 npm run build
 ```
 
-O comando `lint` executa o ESLint. O comando `build` verifica o TypeScript e gera os arquivos de produção com o Vite.
+O comando `lint` executa o ESLint. O comando `build` verifica o TypeScript e gera os arquivos de produção com o Vite. A build publica `catalog.md` como ativo estático junto com a aplicação.
 
 ### Preview da build
 
@@ -234,7 +226,7 @@ A rota de perfil da loja ainda renderiza uma mensagem provisória. Os links info
 
 A tela de produtos do CMS é acessada por `/cms/produtos/novo`, embora o nome da página seja mais abrangente do que apenas “novo”. Alterações futuras de nomenclatura devem atualizar simultaneamente o roteador, o menu administrativo e esta documentação.
 
-O pagamento depende do `paymentLink` retornado pela API. O frontend não processa diretamente os dados financeiros; ele valida os dados básicos do checkout, cria o pedido e encaminha o cliente para o provedor externo.
+O catálogo atual é somente leitura e não substitui um sistema de pedidos, autenticação ou pagamentos. Login, comentários, operações do CMS e checkout que dependem de escrita exibem a indisponibilidade do modo local. Para reativar esses fluxos, conecte uma API de escrita sem alterar o formato do catálogo.
 
 ## 12. Referências
 

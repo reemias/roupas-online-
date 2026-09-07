@@ -30,6 +30,7 @@ export interface Product {
   isActive: boolean
   rating: number
   numReviews: number
+  isBestSeller?: boolean
   createdAt?: string
   updatedAt?: string
   views?: number
@@ -118,8 +119,6 @@ export interface ProductFilters {
   limit?: number
   search?: string
 }
-
-export const API_BASE_URL = import.meta.env.DEV ? '/api' : 'https://backend-insider.vercel.app/api'
 
 export const STORE_STORAGE = { token: 'store:token', user: 'store:user' } as const
 export const CMS_STORAGE = { user: 'cms:user', csrf: 'cms:csrf' } as const
