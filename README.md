@@ -1,195 +1,231 @@
 # Insider Store
 
-Frontend da **Insider Store**, uma loja virtual de roupas com foco em descoberta de produtos, apresentação de detalhes, seleção de variações, carrinho persistente e encaminhamento para pagamento. O projeto também inclui um **CMS administrativo** para acompanhar vendas, clientes e produtos.
+Frontend de uma loja virtual de roupas e calçados construído com React, TypeScript e Vite. O catálogo é alimentado por um arquivo Markdown versionado no repositório, e a aplicação executa a consulta, filtragem, ordenação e paginação dos produtos no navegador.
 
-> O objetivo deste README é explicar como o site funciona na prática: quais são seus objetivos, como o usuário navega, o que cada card representa, quais rotas existem e como o frontend usa o catálogo local em Markdown.
+> **Estado atual:** a loja pública e o carrinho estão implementados. O catálogo é somente leitura. Autenticação, comentários remotos, criação de pedidos e pagamento dependem de um backend de escrita que não está conectado nesta versão.
 
-## 1. Objetivo do projeto
+## Visão geral
 
-A aplicação foi construída para oferecer uma experiência de compra de roupas com navegação visual e filtragem de catálogo. O cliente pode explorar produtos, consultar informações de preço e avaliação, escolher cor, tamanho e quantidade, adicionar itens ao carrinho e iniciar o checkout.
+A aplicação oferece uma experiência de descoberta de produtos com banners, filtros, busca, detalhes de produto, seleção de variações, carrinho persistente, checkout com validação local, comentários salvos no navegador e contato de compra pelo WhatsApp.
 
-O frontend também concentra as rotinas administrativas em uma área separada. O CMS permite visualizar indicadores de vendas, consultar clientes, gerenciar produtos, acompanhar pedidos e acessar configurações internas.
-
-A aplicação é composta por duas experiências complementares:
-
-| Área | Prefixo | Público | Finalidade |
+| Área | Rota | Situação | Descrição |
 | --- | --- | --- | --- |
-| Loja | `/` | Clientes e visitantes | Exibir o catálogo e conduzir a compra. |
-| CMS | `/cms` | Usuários administrativos autenticados | Operar catálogo, pedidos, usuários e indicadores. |
+| Home | `/` | Disponível | Banners, catálogo, filtros, ordenação e carregamento incremental. |
+| Produto | `/produto/:id` | Disponível | Galeria, preço, desconto, variações, estoque, recomendações e avaliações. |
+| Busca | `/busca` | Disponível | Busca textual e filtros por categoria e subcategoria. |
+| Carrinho | `/carrinho` | Parcial | Carrinho e validação local disponíveis; criação do pedido requer backend. |
+| Login | `/login` | Interface disponível | O envio requer backend de autenticação. |
+| Cadastro | `/registrar` | Interface disponível | O envio requer backend de autenticação. |
+| Retorno de pagamento | `/payment-success` | Disponível | Tela de retorno prevista para um provedor de pagamento externo. |
+| Perfil | `/perfil` | Provisório | Rota protegida que exibe a mensagem “Página de perfil (em breve)”. |
 
-## 2. Como o site funciona
+Não existe um CMS frontend em `src`. Referências a `/cms`, dashboard administrativo, pedidos administrativos, clientes ou gerenciamento de produtos não fazem parte da aplicação atual.
 
-### 2.1 Fluxo de descoberta
+## Fluxo de navegação
 
-Ao acessar a raiz (`/`), o visitante encontra a Home da loja. A página apresenta um banner rotativo, filtros de catálogo, ordenação e uma grade de produtos. As categorias e os produtos são carregados de `public/catalog.md`, portanto o cabeçalho e a vitrine refletem o conteúdo versionado no próprio repositório.
+### Home e catálogo
 
-O visitante pode pesquisar pelo campo de busca, abrir uma categoria ou subcategoria no menu, alterar filtros e ordenar os resultados. Cada alteração de filtro reinicia a consulta do catálogo. A Home busca os produtos em páginas de dez registros e carrega mais resultados conforme o usuário se aproxima do final da grade.
+A Home carrega os produtos pelo serviço `src/services/api.ts`. Esse serviço lê uma única vez o arquivo `public/catalog.md` por meio de `fetch('/catalog.md')`, extrai o bloco JSON e mantém os produtos em memória durante a sessão.
 
-### 2.2 Fluxo de produto
+A tela exibe três banners rotativos e permite filtrar o catálogo por categoria, marca, gênero, tamanho, cor e faixa de preço. A grade utiliza páginas de dez produtos e carrega a próxima página quando o usuário se aproxima do final da lista.
 
-Ao selecionar um produto, o usuário é direcionado para `/produto/:id`. A página consulta o catálogo Markdown pelo identificador da URL e exibe galeria de imagens, descrição, preço, desconto, avaliação, estoque, marca, material e cuidados.
+As categorias apresentadas no cabeçalho são derivadas dos próprios produtos do Markdown. Isso evita uma segunda fonte de dados para categorias e subcategorias.
 
-Antes de adicionar o item, o usuário precisa selecionar as variações disponíveis, como cor e tamanho. A quantidade é limitada pelo estoque informado pela API. Depois da inclusão, o drawer do carrinho é aberto automaticamente e oferece o caminho para continuar comprando ou acessar o carrinho completo.
+### Busca
 
-A página de produto também apresenta produtos recomendados da mesma categoria e a área de comentários associada ao produto. Existe ainda uma ação de compra por WhatsApp, que monta uma mensagem com nome, preço, imagem e link do produto.
+A rota `/busca` aceita os seguintes parâmetros:
 
-### 2.3 Fluxo de carrinho e pagamento
-
-O carrinho é mantido pelo `CartContext` e persistido no `localStorage`. A combinação de produto, cor e tamanho identifica uma linha do carrinho. Se a mesma combinação for adicionada novamente, sua quantidade é incrementada.
-
-Na rota `/carrinho`, o usuário pode alterar quantidades, remover itens e preencher seus dados de identificação. O formulário aplica máscaras para CPF e telefone e valida e-mail, CPF, telefone e nome completo antes do envio.
-
-Ao confirmar o pedido, o frontend valida os dados do checkout, mas o modo catálogo Markdown não persiste pedidos nem gera links de pagamento. A ação é informada ao usuário como indisponível até que um serviço de pedidos seja conectado novamente. O carrinho e o catálogo continuam funcionando localmente.
-
-## 3. Cards do site
-
-### 3.1 Card de produto da loja
-
-O componente reutilizável `ProductCard` representa um produto em listas, como a Home e a seção de recomendações. O card inteiro funciona como link para a página de detalhes.
-
-| Elemento | Comportamento |
-| --- | --- |
-| Imagem | Exibe a primeira imagem retornada para o produto. Caso não exista, usa um placeholder. |
-| Nome | Apresenta o nome comercial do produto. |
-| Selo `BEST SELLER` | É exibido quando `isBestSeller` é verdadeiro. |
-| Selo de desconto | Mostra o percentual de desconto quando `discount` é maior que zero. |
-| Preço | Exibe o preço original e o preço calculado com desconto quando aplicável. |
-| Avaliação | Mostra estrelas e a quantidade de avaliações quando existe uma nota maior que zero. |
-| Ação `COMPRA RÁPIDA` | É exibida visualmente no card e integra a affordance de compra rápida da interface. |
-| Link | Leva para `/produto/:id`. |
-
-O preço com desconto é calculado no frontend pela fórmula `preço × (1 - desconto / 100)`. O valor efetivamente enviado ao carrinho também é o valor já descontado.
-
-### 3.2 Cards e blocos do dashboard
-
-No CMS, o dashboard não usa o mesmo `ProductCard` da loja. Ele organiza informações operacionais em blocos de métricas e gráficos.
-
-| Bloco | Informação apresentada |
-| --- | --- |
-| Vendas | Total vendido, ticket médio e quantidade de pedidos. |
-| Série de vendas | Valores de vendas por dia nos últimos sete dias. |
-| Status dos pedidos | Distribuição dos pedidos por status em gráfico de rosca. |
-| Últimos pedidos | Lista resumida com status, cliente e valor. |
-| Clientes | Total de clientes e quantidade de usuários verificados. |
-| Perfil de clientes | Distribuição por verificação e gênero. |
-| Produtos | Indicadores de catálogo, produtos mais visualizados e itens com estoque baixo. |
-
-Esses dados são carregados em paralelo a partir das rotas administrativas da API. O dashboard calcula localmente métricas derivadas, como ticket médio, vendas diárias, produtos mais visualizados e produtos com estoque inferior a dez unidades.
-
-## 4. Rotas da loja
-
-As rotas públicas são definidas em `src/router.tsx`. O `Header`, o `CartDrawer` e os contextos de autenticação e carrinho ficam disponíveis ao redor das páginas da loja.
-
-| Rota | Página | Descrição |
+| Parâmetro | Exemplo | Função |
 | --- | --- | --- |
-| `/` | Home | Banner, catálogo, filtros, ordenação, carregamento incremental e avaliações institucionais. |
-| `/produto/:id` | Detalhes do produto | Galeria, informações, variações, estoque, compra, recomendações e comentários. |
-| `/carrinho` | Carrinho e checkout | Itens, quantidades, dados do cliente e criação do pedido. |
-| `/busca` | Busca | Resultados derivados de texto, categoria e subcategoria enviados por query string. |
-| `/login` | Login | Autenticação do cliente por e-mail e senha. |
-| `/registrar` | Cadastro | Criação de uma nova conta de cliente. |
-| `/payment-success` | Sucesso do pagamento | Página de retorno após o fluxo de pagamento externo. |
-| `/perfil` | Perfil | Rota protegida com tela de perfil ainda em desenvolvimento. |
+| `q` | `/busca?q=camiseta` | Pesquisa no nome, descrição e marca do produto. |
+| `categoria` | `/busca?categoria=Roupas` | Filtra pela categoria do catálogo. |
+| `subcategoria` | `/busca?subcategoria=Camisas` | Filtra pela subcategoria do catálogo. |
 
-### Parâmetros usados na busca
+Quando há uma consulta ativa, a tela carrega os resultados em páginas de oito itens. Depois dos resultados filtrados, ela pode apresentar recomendações adicionais do catálogo, evitando duplicidades.
 
-O cabeçalho navega para `/busca` usando parâmetros de consulta. Os principais parâmetros são:
+### Detalhes do produto
 
-| Parâmetro | Exemplo | Uso |
-| --- | --- | --- |
-| `q` | `/busca?q=camiseta` | Busca textual digitada pelo usuário. |
-| `categoria` | `/busca?categoria=masculino` | Filtra uma categoria. |
-| `subcategoria` | `/busca?subcategoria=camisetas` | Filtra uma subcategoria. |
+A rota `/produto/:id` localiza o produto pelo campo `_id` no catálogo local. A tela apresenta:
 
-A Home usa filtros equivalentes na consulta de produtos: categoria, marca, gênero, tamanho, cor, preço mínimo, preço máximo, ordenação, página e limite.
+- galeria de imagens e visualização ampliada;
+- nome, marca, categoria, descrição e ficha técnica;
+- preço original, desconto e preço calculado;
+- seleção de cor, tamanho e quantidade;
+- indicação de estoque;
+- adição ao carrinho;
+- produtos recomendados da mesma categoria;
+- metadados SEO da página;
+- compartilhamento de uma mensagem de compra pelo WhatsApp.
 
-## 5. Rotas do CMS
+A quantidade adicionada é limitada ao estoque informado no catálogo. O preço usado no carrinho é o preço já calculado com desconto.
 
-O CMS é selecionado em `src/App.tsx` quando o caminho começa com `/cms`. O roteador administrativo usa `basename="/cms"`, portanto os caminhos abaixo são acessados com o prefixo completo indicado.
+### Card e drawer do carrinho
 
-| Rota completa | Tela | Acesso |
-| --- | --- | --- |
-| `/cms/login` | Login administrativo | Pública dentro do CMS. |
-| `/cms/` | Redirecionamento | Redireciona para `/cms/dashboard`. |
-| `/cms/dashboard` | Dashboard | Protegida. Exibe vendas, clientes e produtos. |
-| `/cms/produtos/novo` | Produtos | Protegida. Área de criação ou operação de produtos. |
-| `/cms/Pedidos` | Pedidos | Protegida. Consulta e acompanhamento de pedidos. |
-| `/cms/Usuarios` | Usuários | Protegida. Consulta de clientes e usuários. |
-| `/cms/Config` | Configurações | Protegida. Ajustes operacionais do CMS. |
+O componente `ProductCard` é utilizado na Home, na busca e nas recomendações. Ele exibe a imagem, o nome, o preço, o desconto, a avaliação e o selo de mais vendido quando o produto possui `isBestSeller: true`.
 
-As rotas protegidas passam pelo `ProtectedRoute` do CMS e exibem o cabeçalho administrativo somente depois da autenticação. A autenticação do CMS possui armazenamento próprio, separado do armazenamento da loja.
+Depois que um item é adicionado, o `CartContext` abre automaticamente o drawer lateral. O drawer permite revisar itens, alterar quantidades, remover produtos, limpar o carrinho, continuar comprando, acessar `/carrinho` e montar uma mensagem de pedido para o WhatsApp.
 
-## 6. Estado global e persistência
+### Carrinho e checkout
 
-A aplicação usa Context API para compartilhar estados que atravessam várias páginas.
+O carrinho é armazenado em `localStorage` com a chave `cart`. Cada linha é identificada pela combinação de produto, cor e tamanho. Adicionar a mesma combinação novamente incrementa sua quantidade.
 
-| Contexto | Responsabilidade | Persistência |
-| --- | --- | --- |
-| `ThemeContext` | Fornecer o tema da aplicação. | Estado em memória. |
-| `AuthContext` | Login, cadastro, logout, usuário atual e status de autenticação da loja. | `store:token` e `store:user` no `localStorage`. |
-| `CartContext` | Itens, totais, drawer, inclusão, remoção e alteração de quantidade. | `cart` no `localStorage`. |
-| `CommentsContext` | Estado relacionado aos comentários dos produtos. | Gerenciado pelo fluxo do componente. |
+A rota `/carrinho` possui um formulário com:
 
-O `CartContext` continua persistindo o carrinho no `localStorage`. O `src/services/api.ts` agora é um repositório local: carrega `public/catalog.md` uma vez, extrai o bloco JSON, aplica filtros, ordenação e paginação em memória e expõe os mesmos métodos `get`, `post`, `put` e `delete` para reduzir mudanças nas telas. Os três últimos retornam uma mensagem explícita de indisponibilidade, pois não existe banco de escrita no frontend.
+- nome completo;
+- e-mail;
+- CPF com máscara;
+- telefone com máscara;
+- opção de sacola, que acrescenta R$ 5 ao total;
+- persistência dos dados preenchidos em `localStorage` pela chave `checkoutForm`.
 
-## 7. Catálogo Markdown local
+O formulário valida os dados localmente. Após a validação, ele ainda tenta chamar `POST /orders` por meio do serviço compartilhado. Como o serviço atual está em modo somente leitura, essa chamada retorna a mensagem de que a operação requer um backend. Nenhum pedido é salvo e nenhum link de pagamento é gerado nesta versão.
 
-O arquivo `public/catalog.md` é o banco de dados de leitura do frontend. Ele combina documentação em Markdown com um bloco JSON contendo a coleção `products`. Como está dentro de `public`, o Vite o disponibiliza em `/catalog.md` tanto no desenvolvimento quanto na build de produção.
+### Comentários e avaliações
 
-No carregamento inicial, o serviço local faz uma única chamada `fetch('/catalog.md')`, valida o bloco JSON e mantém o resultado em memória. A partir daí, todos os filtros e as paginações são executados no navegador, sem proxy, URL de backend ou chamada para `backend-insider.vercel.app`.
+A área de comentários é renderizada pelo componente `src/Componentes/Comments`. Comentários e avaliações criados sem usuário autenticado são salvos localmente por produto nas chaves:
 
-As operações mais relevantes observadas no frontend são:
+- `insider:comments:<id-do-produto>`;
+- `insider:reviews:<id-do-produto>`.
 
-| Endpoint | Consumidor | Finalidade |
-| --- | --- | --- |
-| `GET /categories` | Cabeçalho | Derivar categorias e subcategorias do Markdown. |
-| `GET /products` | Home, busca e recomendações | Filtrar, ordenar e paginar produtos do Markdown. |
-| `GET /products/:id` | Detalhes do produto | Localizar um produto pelo `_id`. |
-| `POST`, `PUT`, `DELETE` | Login, comentários, checkout e CMS | Não disponíveis no modo somente leitura; retornam mensagem orientativa sem acessar backend. |
+O usuário pode criar avaliações com nota, título e comentário, criar comentários e excluir registros locais. Quando existe usuário autenticado, o componente também tenta sincronizar as operações com o `CommentsContext`; essa sincronização depende de um backend de escrita e não está disponível no catálogo Markdown.
 
-O contrato dos produtos continua centralizado em `src/types/api.ts`. Ao editar o catálogo, mantenha os campos compatíveis com `Product`, especialmente `_id`, `name`, `price`, `discount`, `images`, `sizes`, `colors`, `stock`, `rating` e `isActive`.
+## Catálogo local em Markdown
 
-## 8. Estrutura principal do código
+O arquivo [`public/catalog.md`](public/catalog.md) é o banco de dados de leitura da loja. Ele contém texto explicativo em Markdown e um bloco cercado por ```` ```json ```` com o objeto:
 
-```text
-src/
-├── App.tsx                 # Decide entre loja pública e CMS
-├── router.tsx              # Rotas da loja
-├── Pages/                  # Páginas públicas da loja
-├── Componentes/            # Cabeçalho, cards, carrinho, comentários e proteção
-├── contexts/               # Autenticação, carrinho, tema e comentários
-├── services/api.ts          # Repositório local do catálogo Markdown
-├── types/                  # Contratos TypeScript da aplicação
-├── Img/                    # Imagens e logos usadas na interface
-└── cms/
-    ├── App.tsx             # Entrada do CMS
-    ├── Router.tsx          # Rotas administrativas
-    ├── Pages/              # Dashboard, produtos, pedidos, usuários e configurações
-    └── components/         # Header, sidebar e proteção administrativa
+```json
+{
+  "products": []
+}
 ```
 
-Os estilos são organizados por componente ou página em arquivos CSS Module. Essa organização evita colisões de classe entre a loja e o CMS.
+Cada produto deve manter os campos esperados pelo tipo `Product` em `src/types/api.ts`.
 
-## 9. Tecnologias
+| Campo | Tipo | Uso |
+| --- | --- | --- |
+| `_id` | `string` | Identificador usado na URL do produto e no carrinho. Deve ser único. |
+| `name` | `string` | Nome comercial exibido na interface. |
+| `description` | `string` | Descrição e texto usado na busca. |
+| `price` | `number` | Preço original em reais. |
+| `discount` | `number` | Desconto percentual aplicado no frontend. |
+| `category` | `string` | Categoria principal. |
+| `subcategory` | `string` | Subcategoria usada na busca. |
+| `brand` | `string` | Marca e filtro de marca. |
+| `material` | `string` | Material exibido na ficha técnica. |
+| `careInstructions` | `string` | Instruções de cuidado. |
+| `gender` | `string` | Gênero usado pelo filtro da Home. |
+| `sizes` | `string[]` | Variações de tamanho disponíveis. |
+| `colors` | `string[]` | Variações de cor disponíveis. |
+| `images` | `string[]` | URLs exibidas na galeria e nos cards. |
+| `stock` | `number` | Estoque usado para limitar a quantidade. |
+| `isActive` | `boolean` | Produtos com `false` são excluídos do catálogo carregado. |
+| `rating` | `number` | Nota exibida no card e nos detalhes. |
+| `numReviews` | `number` | Quantidade de avaliações exibida na interface. |
+| `isBestSeller` | `boolean` | Controla o selo de mais vendido. |
+| `views` e `sales` | `number` | Indicadores disponíveis no modelo para futuras ordenações ou métricas. |
 
-| Tecnologia | Papel no projeto |
+### Comportamento do serviço local
+
+`src/services/api.ts` preserva uma interface parecida com o antigo cliente de API para evitar acoplamento das páginas a uma implementação específica. Atualmente, apenas consultas de leitura são implementadas:
+
+| Operação interna | Consumidores | Comportamento |
+| --- | --- | --- |
+| `GET /categories` | `Header` | Deriva categorias e subcategorias a partir dos produtos ativos. |
+| `GET /products` | Home, busca e drawer | Aplica filtros, ordenação e paginação no navegador. |
+| `GET /products/:id` | Detalhes do produto | Retorna o produto correspondente ao `_id`. |
+| `POST`, `PUT`, `DELETE` | Autenticação, comentários remotos e checkout | Retornam um erro explicativo; não enviam dados para um backend. |
+
+Os dados são carregados apenas uma vez por sessão de página, porque o serviço reutiliza a mesma `Promise` enquanto o catálogo está disponível. Se o carregamento ou o parsing falhar, a promessa é descartada para permitir uma nova tentativa.
+
+## Estado e persistência
+
+A aplicação usa Context API para compartilhar estados entre componentes.
+
+| Contexto ou mecanismo | Responsabilidade | Persistência |
+| --- | --- | --- |
+| `AuthContext` | Usuário atual, login, cadastro e logout. | `store:token` e `store:user`. A autenticação requer backend. |
+| `CartContext` | Itens, totais, drawer e operações do carrinho. | `cart`. |
+| `CommentsContext` | Estado de comentários e avaliações remotos. | Estado em memória; registros locais são gerenciados pelo componente `Comments`. |
+| `ThemeContext` | Tema visual da aplicação. | `theme`. |
+| `checkoutForm` | Dados preenchidos no checkout. | `checkoutForm`. |
+
+O `AuthContext` considera o usuário autenticado quando existem usuário e token no `localStorage`. O código ainda preserva a estrutura necessária para uma futura API de login, mas o cliente local não implementa `POST /auth/login` nem `POST /auth/register`.
+
+## Estrutura do projeto
+
+```text
+.
+├── public/
+│   └── catalog.md                 # Banco de dados de leitura do catálogo
+├── src/
+│   ├── App.tsx                    # Entrada da aplicação
+│   ├── router.tsx                 # BrowserRouter e rotas públicas
+│   ├── Pages/
+│   │   ├── Home/                  # Vitrine, filtros e carregamento incremental
+│   │   ├── Product/               # Detalhes do produto
+│   │   ├── Search/                # Busca e recomendações
+│   │   ├── Cart/                  # Carrinho e checkout
+│   │   ├── Login/                 # Tela de login
+│   │   └── Register/              # Tela de cadastro
+│   ├── Componentes/
+│   │   ├── Header/                # Cabeçalho, busca e categorias
+│   │   ├── SideMenu/              # Menu lateral e acesso à conta
+│   │   ├── ProductCard/            # Card reutilizável de produto
+│   │   ├── CartDrawer/             # Drawer do carrinho
+│   │   ├── Comments/               # Comentários e avaliações locais/remotos
+│   │   ├── PageMeta/               # Metadados SEO
+│   │   ├── ImageWithLoader/         # Imagens com estado de carregamento
+│   │   ├── LoadingSpinner/          # Estados de carregamento
+│   │   └── PaymentSuccess.tsx       # Tela de retorno de pagamento
+│   ├── contexts/                  # Autenticação, carrinho, comentários e tema
+│   ├── hooks/useSearch.ts          # Consulta paginada da busca
+│   ├── services/api.ts             # Repositório local do catálogo
+│   ├── types/                     # Tipos de produto, pedido e usuário
+│   ├── Img/                       # Banners, logos e imagens da interface
+│   ├── index.css                  # Estilos globais
+│   └── App.css                    # Estilos gerais da aplicação
+├── api/preview.js                 # Handler auxiliar legado para preview social
+├── email/                         # Serviço auxiliar independente de envio de e-mail
+├── index.html                     # HTML inicial e metadados da Home
+├── vite.config.ts                 # Plugins Vite, React e SVG
+└── vercel.json                    # Rewrite de rotas SPA
+```
+
+Os estilos das páginas e componentes usam CSS Modules. O arquivo `src/Pages/Product/productInteractions.test.ts` contém testes unitários das interações da página de produto.
+
+### Arquivos auxiliares fora do fluxo principal
+
+`api/preview.js` é um handler legado para gerar HTML com metadados de compartilhamento quando um crawler acessa uma página de produto. Ele ainda tenta consultar `VITE_API_URL` e o endpoint externo antigo. Portanto, ele **não participa do carregamento do catálogo da SPA** e precisa ser atualizado separadamente se o preview social for mantido no deploy atual.
+
+A pasta `email/` contém um serviço Node.js independente. Ele possui `sendEmail.js`, `template.html`, `.env` próprio e script `npm start`, utilizando o pacote `brevo`. Esse serviço não é importado pelo frontend nem é iniciado pelos scripts da raiz.
+
+## Tecnologias e scripts
+
+| Tecnologia ou script | Função |
 | --- | --- |
-| React 19 | Construção da interface e composição dos componentes. |
-| TypeScript | Tipagem de páginas, estados, produtos, pedidos e respostas da API. |
-| Vite | Servidor de desenvolvimento e build de produção. |
-| React Router | Navegação entre loja, detalhes, busca, checkout e CMS. |
-| Context API | Compartilhamento de autenticação, carrinho, tema e comentários. |
-| Chart.js e `react-chartjs-2` | Gráficos do dashboard administrativo. |
-| Lucide React | Ícones da interface. |
-| `react-helmet-async` | Metadados de página e compartilhamento. |
+| React 19 | Componentes e interface. |
+| TypeScript | Tipagem e verificação de código. |
+| Vite | Desenvolvimento e build de produção. |
+| React Router | Rotas da loja. |
+| Context API | Estado compartilhado. |
+| CSS Modules | Estilos isolados por componente. |
+| Lucide React | Ícones. |
+| React Photo View | Ampliação das imagens do produto. |
+| React Helmet Async | Metadados de páginas. |
+| Vitest | Testes unitários. |
+| `npm run dev` | Inicia o servidor de desenvolvimento. |
+| `npm run build` | Executa `tsc -b` e gera a build de produção. |
+| `npm run lint` | Executa o ESLint em todo o projeto. |
+| `npm run test` | Executa os testes com Vitest. |
+| `npm run preview` | Serve a build de produção localmente. |
 
-## 10. Como executar localmente
+## Como executar
 
 ### Pré-requisitos
 
-- Node.js compatível com a versão usada pelo projeto.
-- npm, que acompanha o Node.js.
-    - O arquivo `public/catalog.md` presente no projeto.
+- Node.js compatível com o projeto.
+- npm.
+- O arquivo `public/catalog.md` presente no repositório.
 
 ### Instalação
 
@@ -203,32 +239,51 @@ npm install
 npm run dev
 ```
 
-Depois, abra a URL informada pelo Vite. A loja estará disponível na raiz e o CMS em `/cms`.
+Abra a URL exibida pelo Vite. A aplicação pública começa na rota `/`.
 
-### Verificação de qualidade
+### Build e preview
 
 ```bash
-npm run lint
 npm run build
-```
-
-O comando `lint` executa o ESLint. O comando `build` verifica o TypeScript e gera os arquivos de produção com o Vite. A build publica `catalog.md` como ativo estático junto com a aplicação.
-
-### Preview da build
-
-```bash
 npm run preview
 ```
 
-## 11. Observações de manutenção
+O Vite copia `public/catalog.md` para a raiz da build. Assim, o serviço continua acessando o catálogo por `/catalog.md` em produção.
 
-A rota de perfil da loja ainda renderiza uma mensagem provisória. Os links informativos do rodapé, como “Sobre nós”, “Blog” e políticas, estão presentes visualmente, mas alguns ainda usam destinos de placeholder.
+### Testes e lint
 
-A tela de produtos do CMS é acessada por `/cms/produtos/novo`, embora o nome da página seja mais abrangente do que apenas “novo”. Alterações futuras de nomenclatura devem atualizar simultaneamente o roteador, o menu administrativo e esta documentação.
+```bash
+npm run test
+npm run lint
+```
 
-O catálogo atual é somente leitura e não substitui um sistema de pedidos, autenticação ou pagamentos. Login, comentários, operações do CMS e checkout que dependem de escrita exibem a indisponibilidade do modo local. Para reativar esses fluxos, conecte uma API de escrita sem alterar o formato do catálogo.
+O teste atualmente presente cobre funções de interação da página de produto. O lint é executado sobre todo o repositório; arquivos legados ou componentes que ainda contenham avisos podem impedir o comando de retornar sucesso.
 
-## 12. Referências
+## Deploy e configuração
+
+`vercel.json` redireciona rotas sem extensão para `index.html`, permitindo que o `BrowserRouter` resolva as rotas da SPA. Arquivos estáticos, como `/catalog.md`, continuam sendo servidos diretamente.
+
+O arquivo `.env` ainda contém as variáveis históricas `VITE_API_URL`, mas o serviço atual do catálogo **não as utiliza**. A URL do catálogo é fixa em `/catalog.md`. A variável só permanece relevante para o handler legado `api/preview.js`, caso esse handler seja utilizado no deploy.
+
+Antes de publicar uma alteração de catálogo, valide o JSON embutido e execute uma build:
+
+```bash
+awk '/```json/{flag=1;next}/```/{if(flag){exit}}flag' public/catalog.md > /tmp/catalog.json
+node -e "const c=require('/tmp/catalog.json'); console.log(c.products.length)"
+npm run build
+```
+
+## Limitações conhecidas e próximos passos
+
+A versão atual não possui persistência remota para autenticação, pedidos, pagamentos, comentários ou avaliações. O carrinho, o formulário de checkout e os comentários locais são persistidos apenas no navegador do usuário.
+
+A rota `/perfil` ainda é um placeholder. A tela de retorno `/payment-success` existe, mas não é alcançada pelo fluxo atual porque nenhum link de pagamento é gerado no modo Markdown.
+
+O menu lateral ainda contém links fixos para “Camisas”, “Calças” e “Bonés”. Como “Bonés” não está presente no catálogo povoado atualmente, esse link pode retornar uma busca sem produtos.
+
+Para conectar um backend no futuro, a implementação deve definir uma fonte de escrita para autenticação, pedidos e comentários. O formato do produto em `public/catalog.md` pode continuar sendo usado como contrato inicial do catálogo.
+
+## Referências
 
 [1]: https://react.dev/ "Documentação oficial do React"
 
@@ -236,24 +291,6 @@ O catálogo atual é somente leitura e não substitui um sistema de pedidos, aut
 
 [3]: https://reactrouter.com/ "Documentação oficial do React Router"
 
-[4]: https://www.chartjs.org/ "Documentação oficial do Chart.js"
+[4]: https://vitest.dev/ "Documentação oficial do Vitest"
 
-
-## 13. Atualização da página de detalhes do produto
-
-A página `/produto/:id` foi reconstruída para oferecer uma experiência de compra mais próxima de um editorial de moda e alinhada ao modelo visual de referência. O novo layout organiza o conteúdo em uma galeria de destaque e um painel de compra, com maior hierarquia para o produto, preço, variações e benefícios de entrega.
-
-Entre as principais melhorias estão o cabeçalho compacto com navegação e busca expansível, breadcrumb, galeria com miniaturas verticais, imagem principal clicável com ampliação em lightbox, estado de favorito, seleção visual de cor e tamanho, controle de quantidade, indicação de estoque, compra rápida, link para o carrinho e contato por WhatsApp. O cálculo do desconto e a integração com `CartContext` continuam preservados, assim como a abertura automática do drawer após adicionar o produto.
-
-Abaixo do bloco de compra, a página agora apresenta uma seção editorial de detalhes com descrição e ficha técnica, uma área de avaliações com nota consolidada e o componente de comentários existente, além de uma vitrine de produtos relacionados. O CSS Module foi refeito com uma escala visual própria, espaçamento responsivo, estados de interação e breakpoints para tablets e celulares. A galeria mantém o comportamento de ampliação individual para cada imagem e as miniaturas funcionam como navegação da imagem principal.
-
-A alteração está concentrada em `src/Pages/Product/index.tsx` e `src/Pages/Product/Product.module.css`, sem alterar o contrato da API, os tipos do carrinho ou as rotas existentes.
-
-
-## 14. Avaliações locais, testes e experiência mobile
-
-A página de produto agora permite que visitantes adicionem avaliações com nota de uma a cinco estrelas e comentários sem depender exclusivamente de autenticação. As novas entradas são persistidas no `localStorage` por produto, usando as chaves `insider:reviews:<productId>` e `insider:comments:<productId>`, e permanecem disponíveis após recarregar a página. Quando existe usuário autenticado, o envio também tenta sincronizar a avaliação ou comentário com a API existente.
-
-Foram adicionados testes automatizados com Vitest em `src/Pages/Product/productInteractions.test.ts`. A suíte valida o cálculo da origem do zoom conforme a posição do cursor, a limitação do zoom aos limites da imagem, a seleção de estrelas e a distribuição visual das faixas de avaliação. O comando `npm test` executa a suíte em modo não interativo.
-
-No mobile, as miniaturas da galeria passaram a funcionar como carrossel horizontal com rolagem por toque, snap e scrollbar oculto. O controle de quantidade e o botão principal de compra ocupam linhas próprias para facilitar o toque, enquanto o zoom por hover é desativado em telas pequenas para evitar conflitos com gestos. O layout preserva a hierarquia do produto e mantém os benefícios de compra acessíveis durante a navegação.
+[5]: https://vercel.com/docs "Documentação da Vercel"
