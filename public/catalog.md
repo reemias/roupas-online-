@@ -19,7 +19,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["PP", "P", "M", "G", "GG", "XG"],
       "colors": ["Preto", "Branco", "Cinza"],
-      "images": ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 42,
       "isActive": true,
       "rating": 4.8,
@@ -42,7 +44,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["P", "M", "G", "GG", "XG"],
       "colors": ["Cinza", "Preto"],
-      "images": ["https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 24,
       "isActive": true,
       "rating": 4.7,
@@ -65,7 +69,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["P", "M", "G", "GG"],
       "colors": ["Marrom", "Branco", "Preto"],
-      "images": ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 17,
       "isActive": true,
       "rating": 4.9,
@@ -88,7 +94,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "feminino",
       "sizes": ["PP", "P", "M", "G"],
       "colors": ["Azul", "Preto"],
-      "images": ["https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 12,
       "isActive": true,
       "rating": 4.6,
@@ -111,7 +119,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["P", "M", "G", "GG"],
       "colors": ["Branco", "Marrom"],
-      "images": ["https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 29,
       "isActive": true,
       "rating": 4.5,
@@ -134,7 +144,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43"],
       "colors": ["Branco", "Preto"],
-      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 31,
       "isActive": true,
       "rating": 4.8,
@@ -157,7 +169,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["35", "36", "37", "38", "39", "40", "41", "42", "43"],
       "colors": ["Azul", "Cinza"],
-      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=80"],
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=80"
+      ],
       "stock": 18,
       "isActive": true,
       "rating": 4.7,
@@ -180,7 +194,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["35", "36", "37", "38", "39", "40", "41", "42"],
       "colors": ["Marrom", "Preto"],
-      "images": ["https://images.unsplash.com/photo-1520639888713-7851133b1ed0?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 9,
       "isActive": true,
       "rating": 4.6,
@@ -203,7 +219,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "feminino",
       "sizes": ["34", "35", "36", "37", "38", "39"],
       "colors": ["Preto", "Marrom"],
-      "images": ["https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 15,
       "isActive": true,
       "rating": 4.4,
@@ -226,7 +244,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["35", "36", "37", "38", "39", "40", "41", "42"],
       "colors": ["Preto", "Marrom"],
-      "images": ["https://images.unsplash.com/photo-1614252235316-8c857d7c6a5c?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1614252235316-8c857d7c6a5c?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 21,
       "isActive": true,
       "rating": 4.7,
@@ -249,7 +269,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["P", "M", "G", "GG", "XG"],
       "colors": ["Verde", "Preto"],
-      "images": ["https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 14,
       "isActive": true,
       "rating": 4.8,
@@ -272,7 +294,9 @@ Este arquivo é a fonte de dados do catálogo no modo frontend estático. Os dad
       "gender": "unissex",
       "sizes": ["PP", "P", "M", "G", "GG"],
       "colors": ["Branco", "Preto", "Azul"],
-      "images": ["https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=1000&q=85"],
+      "images": [
+        "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=1000&q=85"
+      ],
       "stock": 36,
       "isActive": true,
       "rating": 4.5,

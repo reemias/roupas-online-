@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Star } from "lucide-react";
+import { MapPinCheckIcon, Phone, Star, X } from "lucide-react";
 import api from "../../services/api";
 import ProductCard from "../../Componentes/ProductCard";
 import style from "./Home.module.css";
@@ -10,7 +10,11 @@ import LoadingSpinner from "../../Componentes/LoadingSpinner";
 import PageMeta from "../../Componentes/PageMeta";
 import Footer from "../../Componentes/Footer";
 import ImageWithLoader from "../../Componentes/ImageWithLoader";
+import Whatsapp from "../../Img/Whatsapp_37229.ico";
 
+// ============================================================
+// TIPOS
+// ============================================================
 interface Produto {
   _id: string;
   name: string;
@@ -38,8 +42,92 @@ interface Filters {
   sort: string;
 }
 
+interface Unidade {
+  nome: string;
+  endereco: string;
+  telefone: string;
+  whatsapp: string;
+  mapaUrl: string;
+}
+
+// ============================================================
+// DADOS DAS UNIDADES (pode vir de uma API futuramente)
+// ============================================================
+const UNIDADES: Unidade[] = [
+  {
+    nome: "Ponta Verde",
+    endereco: "Rua Exemplo, 123 - Ponta Verde, Maceió-AL",
+    telefone: "(82) 98896-3444",
+    whatsapp: "5582988963444",
+    mapaUrl:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3933.350883402848!2d-35.71177989999999!3d-9.651029699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x70145bba3ec13a3%3A0xaecb9c5f20553107!2sAnimal%20Amigo%3A%20Cl%C3%ADnica%20Veterin%C3%A1ria%2C%20Banho%20e%20Tosa%20e%20Pet%20Shop%20em%20Macei%C3%B3!5e0!3m2!1spt-BR!2sbr!4v1765216204994!5m2!1spt-BR!2sbr",
+  },
+  // Adicione outras unidades aqui
+];
+
+// ============================================================
+// COMPONENTE POPUP MAPA (extraído para melhor organização)
+// ============================================================
+const PopUpMapa = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className={style.popupOverlay} onClick={onClose}>
+      <div
+        className={style.popupContainer}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className={style.popupClose} onClick={onClose}>
+          <X size={24} />
+        </button>
+        {UNIDADES.map((unidade) => (
+          <div key={unidade.nome} className={style.unidadeCard}>
+            <h2 className={style.popupTitle}>{unidade.endereco}</h2>
+
+            <h3 className={style.unidadeNome}>{unidade.nome}</h3>
+
+            {/* Mapa */}
+            <div className={style.mapaContainer}>
+              <iframe
+                src={unidade.mapaUrl}
+                width="100%"
+                height="280"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={`Mapa - ${unidade.nome}`}
+              />
+            </div>
+
+            {/* WhatsApp */}
+            <a
+              href={`https://api.whatsapp.com/send?phone=55${unidade.whatsapp}&text=Ol%C3%A1,%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20os%20servi%C3%A7os`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={style.unidadeWhatsapp}
+            >
+              <i className="fab fa-whatsapp"></i> {unidade.telefone}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ============================================================
+// COMPONENTE PRINCIPAL HOME
+// ============================================================
 const Home = () => {
-  // ===== HOOKS (ordem fixa) =====
+  // Estados
+  const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -59,10 +147,18 @@ const Home = () => {
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // ===== SLIDER (hooks movidos para cá) =====
+  // Slider de banners
   const slides = [Banner, Banner2, Banner3];
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Ref para o loader infinito
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  // ===== HANDLERS DO POPUP =====
+  const abrirPopupMapa = () => setIsMapPopupOpen(true);
+  const fecharPopupMapa = () => setIsMapPopupOpen(false);
+
+  // ===== SLIDER =====
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -70,9 +166,7 @@ const Home = () => {
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  const loaderRef = useRef<HTMLDivElement>(null);
-
-  // Extrair opções únicas
+  // ===== EXTRAIR OPCÕES ÚNICAS =====
   const categorias = [
     ...new Set(produtos.map((p) => p.category).filter(Boolean)),
   ];
@@ -89,7 +183,7 @@ const Home = () => {
     "Marrom",
   ];
 
-  // ===== FUNÇÃO DE BUSCA =====
+  // ===== BUSCA DE PRODUTOS =====
   const fetchProdutos = useCallback(
     async (pageNum: number, reset: boolean = false) => {
       try {
@@ -177,12 +271,12 @@ const Home = () => {
     return () => observer.disconnect();
   }, [initialLoading, loadingMore, hasMore]);
 
-  // ===== HANDLERS =====
+  // ===== HANDLERS DE FILTRO E ORDENAÇÃO =====
   const handleFilterChange = (key: keyof Filters, value: string | number) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const toggleSortDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const toggleSortDropdown = () => setIsDropdownOpen((prev) => !prev);
   const selectSort = (sort: string) => {
     setFilters((prev) => ({ ...prev, sort }));
     setIsDropdownOpen(false);
@@ -201,24 +295,26 @@ const Home = () => {
     });
   };
 
-  // ===== EARLY RETURN (agora depois de todos os hooks) =====
+  // ===== LOADING INICIAL =====
   if (initialLoading && produtos.length === 0) {
     return <LoadingSpinner />;
   }
 
-  // ===== RENDER =====
+  // ============================================================
+  // RENDER
+  // ============================================================
   return (
     <>
       <div className={style.ContainerHome}>
         <PageMeta
-          title="Roupas Online - Comprar suas Roupas em um local seguro e confiavel"
+          title="Roupas Online - Comprar suas Roupas em um local seguro e confiável"
           description="Descubra as melhores roupas masculinas e femininas com tecnologia de ponta. Conforto, estilo e inovação."
           image="https://insider-roan.vercel.app/banner-home.jpg"
           url="https://insider-roan.vercel.app"
           type="website"
         />
 
-        {/* Banner com slider */}
+        {/* ===== BANNER SLIDER ===== */}
         <div className={style.Banner}>
           <div className={style.slidesWrapper}>
             {slides.map((src, index) => (
@@ -241,17 +337,42 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Filtro / Ordenação (topo) */}
+        {/* ===== TOPO: VENDEDORES + LOCALIZAÇÃO + ORDENAÇÃO ===== */}
         <div className={style.filtro_Preco_Baixo_alto}>
           <div className={style.Titulo_Filtro_Home}>
-            <span>ROUPAS MASCULINAS TECNOLÓGICAS</span>
-            <p>
-              Roupas essenciais não tem erro - é tecnologia que eleva o dia a
-              dia. Ultra confortáveis, versáteis, atemporais e fáceis de cuidar.
-            </p>
+            <div className={style.VendedoresButton}>
+              <button>
+                <img src={Whatsapp} alt="WhatsApp" /> Lista Vendedores
+              </button>
+              <div className={style.DropDown_Vendedores}>
+                <a
+                  href="https://wa.me/5511999999999"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Phone size={16} /> Marte
+                </a>
+                <a
+                  href="https://wa.me/5511999999999"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Phone size={16} /> Carlos
+                </a>
+              </div>
+            </div>
           </div>
 
+          {/* Popup do mapa */}
+          <PopUpMapa isOpen={isMapPopupOpen} onClose={fecharPopupMapa} />
+
           <div className={style.Area_Button_Filter_Home_Inter}>
+            {/* Botão "Onde estamos" */}
+            <button onClick={abrirPopupMapa} className={style.Area_Localizacao}>
+              <MapPinCheckIcon size={20} />
+              Onde estamos
+            </button>
+
             <div className={style.Area_Resultados_mobile}>
               <p>Resultados {totalResults}</p>
             </div>
@@ -275,7 +396,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Filtro Lateral (esquerda) */}
+        {/* ===== FILTROS (lateral esquerda) ===== */}
         <div className={`${style.filtro} ${style.mobileOpen}`}>
           <div className={style.filterHeader}>
             <h4>Filtros</h4>
@@ -427,7 +548,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Lista de Produtos (direita) */}
+        {/* ===== GRADE DE PRODUTOS ===== */}
         <div className={style.Roupas}>
           {error ? (
             <div className={style.error}>{error}</div>
@@ -460,9 +581,8 @@ const Home = () => {
           )}
         </div>
 
-        {/* Avaliações (mantido) */}
+        {/* ===== AVALIAÇÕES ===== */}
         <div className={style.Avaliacao}>
-          {/* Mantém o mesmo conteúdo de avaliações */}
           <div className={style.ratingSummary}>
             <div className={style.ratingScore}>
               <span className={style.score}>4,9</span>
@@ -531,7 +651,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Comentários */}
+        {/* ===== COMENTÁRIOS ===== */}
         <div className={style.Comentarios}></div>
       </div>
       <Footer />

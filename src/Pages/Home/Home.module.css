@@ -78,7 +78,9 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition:
+    background 0.3s,
+    transform 0.2s;
 }
 
 .dot:hover {
@@ -190,7 +192,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background 0.2s, border 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    border 0.2s,
+    color 0.2s;
 }
 
 .dropdownToggle:hover {
@@ -220,7 +225,10 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s;
 }
 
 .dropdownMenu.open {
@@ -611,11 +619,11 @@
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  .Grafico{
+  .Grafico {
     width: 100%;
   }
 
-  .ContainerHome .filtro{
+  .ContainerHome .filtro {
     display: none;
   }
   /* Ordenação */
@@ -741,4 +749,451 @@
     padding: 4px 8px;
     font-size: 0.9rem;
   }
+}
+
+/* ===== CONTAINER PRINCIPAL ===== */
+.Titulo_Filtro_Home {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.Titulo_Filtro_Home span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--store-ink, #212529);
+  letter-spacing: -0.01em;
+}
+
+/* ===== BOTÃO VENDEDORES ===== */
+.VendedoresButton {
+  position: relative;
+  display: inline-block;
+}
+
+.VendedoresButton button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.VendedoresButton button:hover {
+  background: #128c7e;
+  transform: scale(1.02);
+}
+
+.VendedoresButton button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* ===== DROPDOWN ===== */
+.DropDown_Vendedores {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: #fff;
+  border-radius: var(--store-radius-md, 10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--store-border, #e9ecef);
+  padding: 8px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0.25s;
+  z-index: 100;
+}
+
+/* Exibe o dropdown ao passar o mouse sobre o botão ou o próprio dropdown */
+.VendedoresButton:hover .DropDown_Vendedores,
+.DropDown_Vendedores:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.DropDown_Vendedores a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  color: var(--store-ink, #212529);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.DropDown_Vendedores a:last-child {
+  border-bottom: none;
+}
+
+.DropDown_Vendedores a:hover {
+  background: #f8f9fa;
+  color: #25d366;
+}
+
+.DropDown_Vendedores a svg,
+.DropDown_Vendedores a img {
+  width: 18px;
+  height: 18px;
+  color: #25d366;
+}
+
+/* Seta indicadora (opcional) */
+.DropDown_Vendedores::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.05));
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .Titulo_Filtro_Home {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .Titulo_Filtro_Home span {
+    text-align: center;
+    font-size: 1rem;
+  }
+  .VendedoresButton button {
+    width: 100%;
+    justify-content: center;
+    padding: 2px;
+    font-size: 0.95rem;
+  }
+  .DropDown_Vendedores {
+    right: auto;
+    left: 0;
+    min-width: 100%;
+  }
+  .DropDown_Vendedores::before {
+    right: auto;
+    left: 20px;
+  }
+}
+
+/* ===== POP-UP MAPA / UNIDADES ===== */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popupContainer {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 40px 40px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.popupClose {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #666;
+  transition:
+    color 0.2s,
+    transform 0.15s;
+  padding: 0 8px;
+}
+
+.popupTitle {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 24px 0;
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+.popupContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== CARD DE UNIDADE ===== */
+.unidadeCard {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid #e9ecef;
+  transition: border-color 0.2s;
+}
+.unidadeCard:hover {
+  border-color: #25d366;
+}
+
+.unidadeNome {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 10px 0;
+}
+
+.unidadeWhatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #25d366;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+.unidadeWhatsapp i {
+  font-size: 1.2rem;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 600px) {
+  .popupContainer {
+    padding: 24px 20px 28px;
+    border-radius: 16px;
+    width: 95%;
+  }
+  .popupTitle {
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+  }
+  .unidadeCard {
+    padding: 14px 16px;
+  }
+  .unidadeNome {
+    font-size: 1rem;
+  }
+  .unidadeWhatsapp {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+} /* ============================================================
+   POP-UP DO MAPA
+   ============================================================ */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popupContainer {
+  background: #fff;
+  border-radius: 20px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px 30px 40px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.popupClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.popupTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.unidadeCard {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+.unidadeCard:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.unidadeNome {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1a1a1a;
+}
+
+.mapaContainer {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.mapaContainer iframe {
+  display: block;
+  width: 100%;
+  height: 280px;
+}
+
+.unidadeEndereco {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 8px 0;
+}
+
+.unidadeWhatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25d366;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+/* Responsivo */
+@media (max-width: 640px) {
+  .popupContainer {
+    padding: 20px 16px 30px;
+    width: 95%;
+    border-radius: 16px;
+  }
+  .popupTitle {
+    font-size: 1.4rem;
+  }
+  .mapaContainer iframe {
+    height: 200px;
+  }
+  .unidadeWhatsapp {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.Area_Localizacao {
+  padding: 8px;
+  display: flex;
+  gap: 10px;
+  color: white;
+  align-items: center;
+  border-radius: 7px;
+  background: rgba(8, 6, 126, 0.788);
+  border: 1px solid rgba(0, 0, 0, 0.568);
+  margin: 10px;
+}
+
+.Area_Localizacao svg {
+  color: white;
 }
