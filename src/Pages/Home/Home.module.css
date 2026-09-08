@@ -887,6 +887,7 @@
     width: 100%;
     justify-content: center;
     padding: 2px;
+    height: 40px;
     font-size: 0.95rem;
   }
   .DropDown_Vendedores {
@@ -1189,8 +1190,8 @@
   color: white;
   align-items: center;
   border-radius: 7px;
-  background: rgba(8, 6, 126, 0.788);
-  border: 1px solid rgba(0, 0, 0, 0.568);
+  background: rgba(8, 4, 243, 0.952);
+  border: 1px solid rgba(0, 0, 0, 0.411);
   margin: 10px;
 }
 
