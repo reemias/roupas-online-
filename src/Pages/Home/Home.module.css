@@ -5,7 +5,7 @@
   display: grid;
   grid-template-areas:
     "Banner Banner"
-    "Filtro_PRECO Filtro_PRECO"
+    "Filtro Filtro_PRECO"
     "Filtro Roupas"
     "Avaliacao Avaliacao"
     "Comentarios Comentarios";
@@ -775,18 +775,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #25d366;
-  color: #fff;
+  border: solid 1px #25d366;
+  background-color: white;
+  color: #25d366;
   border: none;
   padding: 10px 20px;
   border-radius: 30px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    transform 0.1s;
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
 }
 
 .VendedoresButton button:hover {
@@ -1187,14 +1184,16 @@
   padding: 8px;
   display: flex;
   gap: 10px;
-  color: white;
+  background-color: white;
+  color: black;
+  font-weight: 600;
   align-items: center;
   border-radius: 7px;
-  background: rgba(8, 4, 243, 0.952);
-  border: 1px solid rgba(0, 0, 0, 0.411);
+  border: solid 1px rgba(0, 0, 0, 0.952);
   margin: 10px;
+  cursor: pointer;
 }
 
 .Area_Localizacao svg {
-  color: white;
+  color: black;
 }
