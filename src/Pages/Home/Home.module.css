@@ -881,11 +881,7 @@
     font-size: 1rem;
   }
   .VendedoresButton button {
-    width: 100%;
-    justify-content: center;
-    padding: 2px;
-    height: 40px;
-    font-size: 0.95rem;
+    display: none;
   }
   .DropDown_Vendedores {
     right: auto;
